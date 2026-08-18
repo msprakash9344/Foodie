@@ -1,0 +1,41 @@
+/* .carousal{
+  background-color: rgb(54, 54, 54);
+  color: orangered;
+  margin-bottom: 200px;
+
+} */
+
+
+.homebanner{
+  background-color: rgb(230, 70, 11);
+}
+
+.foodimage{
+  height: 250px;
+  width: 100%;
+}
+
+.sploffbtn{
+
+  color: white;
+  background-color:orangered;
+  border-style: none;
+}
+
+.sploffbtn:hover{
+  background-color: green;
+}
+
+.gotomenubutton{
+  border: none;
+  color: white;
+  background-color: orangered;
+  height: 70px;
+  width: 200px;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.gotomenubutton:hover{
+  background-color: black;
+}
