@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const PORT = "https://foodie-server-0i8g.onrender.com"
+
 const Login = () => {
 
   const [email, setEmail] = useState("");
@@ -74,7 +76,7 @@ const Login = () => {
     try {
 
       const result = await axios.post(
-        "http://localhost:3001/login",
+        `${PORT}/login`,
         {
           email,
           password,
