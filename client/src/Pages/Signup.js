@@ -23,6 +23,8 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
+  const PORT = "https://foodie-server-0i8g.onrender.com"
+
   const handleInputChange = (e, type) => {
     const value = e.target.value;
 
@@ -84,7 +86,7 @@ const handleSubmit = async (e) => {
 
   try {
     const result = await axios.post(
-      "http://localhost:3001/register",
+     `${PORT}/register`,
       {
         name,
         email,
