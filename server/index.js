@@ -4,19 +4,37 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-require('dotenv').config()
-
+require("dotenv").config();
 
 const UserModal = require("./models/User");
-const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// Middleware
+// ===============================
+// MIDDLEWARE
+// ===============================
+
 app.use(express.json());
+
 app.use(cors());
 
-// MongoDB connection
+
+// ===============================
+// TEST ROUTE
+// ===============================
+
+app.get("/", (req, res) => {
+  res.json({
+    status: "success",
+    message: "Foodie Backend is running",
+  });
+});
+
+
+// ===============================
+// MONGODB CONNECTION
+// ===============================
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -26,12 +44,16 @@ mongoose
     console.log("MongoDB connection error:", err);
   });
 
+
+// ===============================
 // REGISTER
+// ===============================
 
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); // In a real application, you should hash the password before storing it
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Check whether email already exists
     const existingUser = await UserModal.findOne({ email });
@@ -47,7 +69,7 @@ app.post("/register", async (req, res) => {
     await UserModal.create({
       name,
       email,
-      password : hashedPassword,
+      password: hashedPassword,
     });
 
     return res.json({
@@ -56,7 +78,7 @@ app.post("/register", async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
+    console.log("Register error:", err);
 
     return res.status(500).json({
       status: "error",
@@ -66,18 +88,18 @@ app.post("/register", async (req, res) => {
 });
 
 
-
-
+// ===============================
 // LOGIN
+// ===============================
 
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Find user using email
+    // Find user using email
     const user = await UserModal.findOne({ email });
 
-    // 2. Email doesn't exist
+    // Email doesn't exist
     if (!user) {
       return res.json({
         status: "error",
@@ -85,8 +107,12 @@ app.post("/login", async (req, res) => {
       });
     }
 
-    // 3. Email exists but password is wrong
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Check password
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password
+    );
+
     if (!isPasswordValid) {
       return res.json({
         status: "error",
@@ -94,18 +120,21 @@ app.post("/login", async (req, res) => {
       });
     }
 
-    // 4. Both email and password are correct
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     return res.json({
       status: "success",
       message: "Successfully logged in",
       token,
     });
 
-
   } catch (err) {
-    console.log(err);
+    console.log("Login error:", err);
 
     return res.status(500).json({
       status: "error",
@@ -114,8 +143,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+// ===============================
 // START SERVER
+// ===============================
+
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log("Server is running on port 3001");
+  console.log(`Server is running on port ${PORT}`);
 });
