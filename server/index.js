@@ -8,6 +8,7 @@ require('dotenv').config()
 
 
 const UserModal = require("./models/User");
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
@@ -115,6 +116,6 @@ app.post("/login", async (req, res) => {
 
 // START SERVER
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log("Server is running on port 3001");
 });
